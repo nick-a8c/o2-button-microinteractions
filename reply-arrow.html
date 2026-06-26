@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Reply arrow — your AE animation on the O2 button</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+<style>
+  :root{
+    --o2-text:#50575e; --o2-border:#dcdcde; --o2-border-hov:#c3c4c7;
+    --o2-bg:#fff; --o2-bg-hov:#f6f7f7; --o2-badge:#757575;
+    --o2-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;padding:48px 32px;font-family:var(--o2-font);color:var(--o2-text);background:#f0f0f1}
+  .wrap{max-width:680px;margin:0 auto}
+  h1{font-size:15px;color:#1e1e1e;margin:0 0 4px}
+  p.sub{font-size:13px;color:#6b7177;margin:0 0 26px;line-height:1.5}
+  .card{background:#fff;border:1px solid var(--o2-border);border-radius:8px;padding:24px;margin-bottom:20px}
+  .card .lbl{font-size:12px;color:#787c80;margin-bottom:14px}
+  .row{display:flex;align-items:center;gap:18px}
+
+  /* big looping preview of your raw comp */
+  #bigPreview{width:240px;height:104px;border:1px dashed #e3e3e4;border-radius:6px}
+
+  .o2-btn{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:7px 13px;font-size:14px;line-height:1;color:var(--o2-text);
+    background:var(--o2-bg);border:1px solid var(--o2-border);border-radius:6px;
+    cursor:pointer;user-select:none;transition:background .15s,border-color .15s;
+  }
+  .o2-btn:hover{background:var(--o2-bg-hov);border-color:var(--o2-border-hov)}
+  .o2-count{font-size:12px;color:var(--o2-badge)}
+
+  /* the icon slot: crop the wide comp to a window over the arrow.
+     Visible arrow lives at comp point (71, 58.7) per the AE mask rect.
+     Scale S=0.36, box 26x20, offset so (71,58.7)*S lands at box center (13,10). */
+  .ico-lottie{width:26px;height:20px;overflow:hidden;position:relative;flex:0 0 26px}
+  .ico-lottie > div{position:absolute;width:93.96px;height:40.68px;left:-12.56px;top:-11.13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Reply — your AE animation, wired to the O2 button</h1>
+  <p class="sub">Top: your raw comp looping, to confirm it's your animation. Bottom: the same Lottie cropped into the button's icon slot, playing once on hover.</p>
+
+  <div class="card">
+    <div class="lbl">Your comp, looping</div>
+    <div class="row"><div id="bigPreview"></div></div>
+  </div>
+
+  <div class="card">
+    <div class="lbl">O2 Reply button — hover to play</div>
+    <div class="row">
+      <button class="o2-btn" id="replyBtn" type="button">
+        <span class="ico-lottie"><div id="btnLottie"></div></span>
+        <span>Reply</span><span class="o2-count">1</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+const animData = {"v":"5.12.1","fr":30,"ip":42,"op":82,"w":261,"h":113,"nm":"reply","ddd":0,"assets":[],"layers":[{"ddd":0,"ind":1,"ty":3,"nm":"NULL CONTROL 2","sr":1,"ks":{"o":{"a":0,"k":0,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[133.295,57.198,0],"ix":2,"l":2},"a":{"a":0,"k":[50,50,0],"ix":1,"l":2},"s":{"a":0,"k":[100,100,100],"ix":6,"l":2}},"ao":0,"ip":0,"op":308,"st":0,"bm":0},{"ddd":0,"ind":2,"ty":4,"nm":"mask","td":1,"sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[71.058,58.696,0],"ix":2,"l":2},"a":{"a":0,"k":[0,0,0],"ix":1,"l":2},"s":{"a":0,"k":[100,63.748,100],"ix":6,"l":2}},"ao":0,"shapes":[{"ty":"gr","it":[{"ty":"rc","d":1,"s":{"a":0,"k":[69.116,57.893],"ix":2},"p":{"a":0,"k":[0,0],"ix":3},"r":{"a":0,"k":0,"ix":4},"nm":"Rectangle Path 1","mn":"ADBE Vector Shape - Rect","hd":false},{"ty":"fl","c":{"a":0,"k":[0.882323979396,0.882323979396,0.882323979396,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fill 1","mn":"ADBE Vector Graphic - Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transform"}],"nm":"Rectangle 1","np":3,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":316,"st":0,"ct":1,"bm":0},{"ddd":0,"ind":3,"ty":4,"nm":"in","parent":1,"tt":1,"tp":2,"sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":1,"k":[{"i":{"x":0,"y":1},"o":{"x":0,"y":0},"t":55,"s":[-17.037,55.217,0],"to":[0,0,0],"ti":[0,0,0]},{"t":73,"s":[-7.037,55.217,0]}],"ix":2,"l":2},"a":{"a":0,"k":[-329.625,77.875,0],"ix":1,"l":2},"s":{"a":0,"k":[100,100,100],"ix":6,"l":2}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[0,12.5],[-9.75,0],[0,0]],"o":[[0,0],[0,-12.5],[9.75,0],[0,0]],"v":[[-347.227,162.189],[-347.237,83.84],[-332.5,69.75],[-246.739,69.774]],"c":false},"ix":2},"nm":"Path 2","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[0.235290527344,0.262756347656,0.290191650391,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":4,"ix":5},"lc":2,"lj":2,"bm":0,"nm":"Stroke 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tm","s":{"a":0,"k":41.6,"ix":1},"e":{"a":0,"k":65,"ix":2},"o":{"a":1,"k":[{"i":{"x":[0.115],"y":[1]},"o":{"x":[0.129],"y":[0]},"t":55,"s":[-119]},{"t":66,"s":[0]}],"ix":3},"m":1,"ix":3,"nm":"Trim Paths 1","mn":"ADBE Vector Filter - Trim","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transform"}],"nm":"Shape 3","np":4,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false},{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":1,"k":[{"i":{"x":0,"y":1},"o":{"x":0.333,"y":0},"t":59,"s":[{"i":[[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0]],"v":[[-317.097,69.053],[-311.829,69.824],[-317.166,70.505]],"c":false}]},{"t":73,"s":[{"i":[[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0]],"v":[[-320.456,59.05],[-311.901,69.696],[-320.556,80.632]],"c":false}]}],"ix":2},"nm":"Path 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[0.235290527344,0.262756347656,0.290191650391,1],"ix":3},"o":{"a":1,"k":[{"i":{"x":[0.833],"y":[0.833]},"o":{"x":[0.167],"y":[0.167]},"t":58,"s":[0]},{"t":59,"s":[100]}],"ix":4},"w":{"a":0,"k":4,"ix":5},"lc":2,"lj":2,"bm":0,"nm":"Stroke 2","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tm","s":{"a":0,"k":0,"ix":1},"e":{"a":0,"k":100,"ix":2},"o":{"a":0,"k":0,"ix":3},"m":1,"ix":3,"nm":"Trim Paths 1","mn":"ADBE Vector Filter - Trim","hd":false},{"ty":"tr","p":{"a":1,"k":[{"i":{"x":0,"y":1},"o":{"x":0.333,"y":0},"t":56,"s":[-26.667,0],"to":[0,0],"ti":[0,0]},{"t":70,"s":[0,0]}],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":-0.001,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transform"}],"nm":"Shape 2","np":4,"cix":2,"bm":0,"ix":2,"mn":"ADBE Vector Group","hd":false}],"ip":10,"op":326,"st":10,"ct":1,"bm":0},{"ddd":0,"ind":4,"ty":4,"nm":"mask 2","td":1,"sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[71.058,58.696,0],"ix":2,"l":2},"a":{"a":0,"k":[0,0,0],"ix":1,"l":2},"s":{"a":0,"k":[100,63.748,100],"ix":6,"l":2}},"ao":0,"shapes":[{"ty":"gr","it":[{"ty":"rc","d":1,"s":{"a":0,"k":[69.116,57.893],"ix":2},"p":{"a":0,"k":[0,0],"ix":3},"r":{"a":0,"k":0,"ix":4},"nm":"Rectangle Path 1","mn":"ADBE Vector Shape - Rect","hd":false},{"ty":"fl","c":{"a":0,"k":[0.882323979396,0.882323979396,0.882323979396,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fill 1","mn":"ADBE Vector Graphic - Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transform"}],"nm":"Rectangle 1","np":3,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":316,"st":0,"ct":1,"bm":0},{"ddd":0,"ind":5,"ty":4,"nm":"out","parent":1,"tt":1,"tp":4,"sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[-7.037,55.217,0],"ix":2,"l":2},"a":{"a":0,"k":[-329.625,77.875,0],"ix":1,"l":2},"s":{"a":0,"k":[100,100,100],"ix":6,"l":2}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,12.5],[-9.75,0],[0,0]],"o":[[0,-12.5],[9.75,0],[0,0]],"v":[[-347.237,83.84],[-332.5,69.75],[-246.739,69.774]],"c":false},"ix":2},"nm":"Path 2","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"tm","s":{"a":0,"k":0,"ix":1},"e":{"a":0,"k":40,"ix":2},"o":{"a":1,"k":[{"i":{"x":[0.456],"y":[1]},"o":{"x":[0.729],"y":[0]},"t":45,"s":[0]},{"t":58,"s":[199]}],"ix":3},"m":1,"ix":2,"nm":"Trim Paths 1","mn":"ADBE Vector Filter - Trim","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transform"}],"nm":"Shape 3","np":3,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false},{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":1,"k":[{"i":{"x":0.456,"y":1},"o":{"x":0.729,"y":0},"t":45,"s":[{"i":[[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0]],"v":[[-320.456,59.05],[-311.901,69.696],[-320.556,80.632]],"c":false}]},{"t":53,"s":[{"i":[[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0]],"v":[[-318.279,67.379],[-309.651,69.645],[-318.228,71.831]],"c":false}]}],"ix":2},"nm":"Path 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"tm","s":{"a":0,"k":0,"ix":1},"e":{"a":0,"k":100,"ix":2},"o":{"a":0,"k":0,"ix":3},"m":1,"ix":2,"nm":"Trim Paths 1","mn":"ADBE Vector Filter - Trim","hd":false},{"ty":"tr","p":{"a":1,"k":[{"i":{"x":0.456,"y":1},"o":{"x":0.729,"y":0},"t":45,"s":[0,0],"to":[0,0],"ti":[0,0]},{"t":58,"s":[63,0]}],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transform"}],"nm":"Shape 2","np":3,"cix":2,"bm":0,"ix":2,"mn":"ADBE Vector Group","hd":false},{"ty":"st","c":{"a":0,"k":[0.235290527344,0.262756347656,0.290191650391,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":4,"ix":5},"lc":2,"lj":2,"bm":0,"nm":"Stroke 1","mn":"ADBE Vector Graphic - Stroke","hd":false}],"ip":0,"op":316,"st":0,"ct":1,"bm":0}],"markers":[],"props":{}};
+
+// Big looping preview — confirms this is your animation
+lottie.loadAnimation({ container: document.getElementById('bigPreview'), renderer:'svg', loop:true, autoplay:true, animationData: animData });
+
+// Button instance — plays once on hover
+const btnAnim = lottie.loadAnimation({ container: document.getElementById('btnLottie'), renderer:'svg', loop:false, autoplay:false, animationData: animData });
+const replyBtn = document.getElementById('replyBtn');
+let playing = false;
+btnAnim.addEventListener('complete', () => { playing = false; });
+replyBtn.addEventListener('mouseenter', () => {
+  if (playing) return;
+  playing = true;
+  btnAnim.goToAndPlay(0, true);
+});
+</script>
+</body>
+</html>
