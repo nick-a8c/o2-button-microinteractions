@@ -216,12 +216,37 @@
   .p2-cdate{color:#0675c4;font-size:13px;margin-left:8px;}
   .p2-ctext{font-size:15px;margin:10px 0;}
   .p2-cact{display:flex;gap:18px;color:#646970;font-size:14px;align-items:center;}
+  .p2-cact span{cursor:pointer;}
+
+  /* reply compose box */
+  .p2-compose{display:flex;gap:14px;padding:14px 0;}
+  .p2-compose>img{width:36px;height:36px;border-radius:50%;flex:none;object-fit:cover;}
+  .p2-compose .cbody{flex:1;}
+  .p2-compose textarea{width:100%;box-sizing:border-box;min-height:56px;resize:vertical;
+    border:1px solid #c3c4c7;border-radius:6px;padding:9px 11px;font:inherit;font-size:15px;color:#1e1e1e;}
+  .p2-compose textarea:focus{outline:none;border-color:#0675c4;box-shadow:0 0 0 1px #0675c4;}
+  .p2-compose .compose-actions{display:flex;gap:8px;margin-top:8px;}
+  .p2-compose button{font-size:14px;padding:6px 16px;border-radius:6px;cursor:pointer;
+    border:1px solid #c3c4c7;background:#fff;color:#1e1e1e;}
+  .p2-compose button.publish{background:#0675c4;border-color:#0675c4;color:#fff;font-weight:500;}
+
+  /* per-reply: hover remove-x + animated like star */
+  .p2-comment{position:relative;}
+  .reply-x{position:absolute;top:6px;right:0;width:22px;height:22px;border:0;background:none;
+    color:#787c82;font-size:18px;line-height:1;cursor:pointer;opacity:0;transition:opacity .12s;border-radius:4px;}
+  .p2-comment:hover .reply-x{opacity:1;}
+  .reply-x:hover{background:#eee;color:#1e1e1e;}
+  .reply-like{display:inline-flex;align-items:center;gap:5px;cursor:pointer;}
+  .reply-star{width:27px;height:27px;display:inline-block;}
+  .reply-star svg{width:100%!important;height:100%!important;}
+  .reply-star svg path{stroke-width:4.5px;}
 
   /* dev tuner gears repositioned below the dark bars on this page */
   #tuner-toggle{top:100px;}
   #tuner-toggle-follow{top:138px;}
   #tuner-toggle-like{top:176px;}
-  .tuner{top:214px;}
+  #tuner-toggle-avatars{top:214px;}
+  .tuner{top:252px;}
 </style>
 </head>
 <body>
@@ -303,12 +328,12 @@
         <nav class="o2-actions">
           <a class="o2-btn" href="#" id="reply-btn" data-action="reply">
             <span class="ico ico-reply" id="reply-ico"></span>
-            <span id="reply-lbl">Reply</span><span class="reply-count">3</span>
+            <span id="reply-lbl">Reply</span><span class="reply-count">0</span>
           </a>
 
           <a class="o2-btn" href="#" id="follow-btn" data-action="follow" data-actionstate="subscribed">
             <span class="ico ico-follow" id="follow-ico"></span>
-            <span id="follow-lbl">Following</span>
+            <span id="follow-lbl">Follow</span>
           </a>
 
           <a class="o2-btn" href="#" id="like-btn" data-action="like">
@@ -330,41 +355,9 @@
 
         <hr class="o2-rule">
 
-        <!-- intralinks -->
-        <div class="intralinks">
-          <p class="intralinks-count">
-            <svg class="link-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                 stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9.5 13.5l5-5"/>
-              <path d="M11 7l1-1a3.5 3.5 0 0 1 5 5l-1 1"/>
-              <path d="M13 17l-1 1a3.5 3.5 0 0 1-5-5l1-1"/>
-            </svg>
-            1 link to this thread from Automatticians
-          </p>
-          <div class="intralink-row">
-            <span class="intra-avatar">
-              <img class="gravatar"
-                   src="https://0.gravatar.com/avatar/c3fd5786a68b26fa7f964475800a2513c14a2bc8e29ee5a737e4368f01da4f99?s=64&d=identicon&r=G"
-                   alt="">
-              <img class="blavatar"
-                   src="https://thursdayupdates.wordpress.com/wp-content/uploads/2025/03/cropped-thursday.png?w=32"
-                   alt="">
-            </span>
-            <span class="intra-date">Jun 4</span>
-            <a class="intra-link" href="http://thursdayupdates.wordpress.com/2026/06/04/design-10-apr-01-june/">Design 10 Apr - 01 June</a>
-          </div>
-        </div>
-
-        <!-- replies -->
-        <h3 class="p2-replies-h">3 replies</h3>
-        <div class="p2-comment">
-          <img src="https://i.pravatar.cc/72?img=47" alt="">
-          <div class="cbody">
-            <div><span class="p2-cname">Melody Michaud</span><span class="p2-cdate">3:50 pm on June 1, 2026 ⌃</span></div>
-            <div class="p2-ctext">Great advice! Thanks for sharing!</div>
-            <div class="p2-cact"><span>Reply</span><span>★ Liked by you</span></div>
-          </div>
-        </div>
+        <!-- replies (count synced to the Reply button) -->
+        <h3 class="p2-replies-h" id="replies-h">0 replies</h3>
+        <div id="replies-list"></div>
       </div>
     </main>
 
@@ -486,10 +479,12 @@
 
   // interaction — new keyframes: hover-on 11–33 / 102–106 (active) · select 40–74 · deselect 106–122 · hover-off 125–130
   var REST_FOLLOWED=74, REST_IDLE=10, followed=false;   // start switched OFF (not following)
-  anim.addEventListener('DOMLoaded',function(){ crop(); anim.goToAndStop((followed?REST_FOLLOWED:REST_IDLE)-anim.firstFrame,true); });
+  function setFollowLabel(){ document.getElementById('follow-lbl').textContent = followed ? 'Following' : 'Follow'; }
+  anim.addEventListener('DOMLoaded',function(){ crop(); anim.goToAndStop((followed?REST_FOLLOWED:REST_IDLE)-anim.firstFrame,true); setFollowLabel(); });
   FB.addEventListener('click',function(e){ e.preventDefault();
     if(followed){ anim.playSegments([106,122],true); followed=false; }   // click → unfollow (active → not active)
     else        { anim.playSegments([40,74],true);   followed=true;  }   // click → follow (not active → active)
+    setFollowLabel();   // label follows state: Follow ⇄ Following
   });
   FB.addEventListener('mouseenter',function(){ followed ? anim.playSegments([102,106],true) : anim.playSegments([11,33],true); });
   FB.addEventListener('mouseleave',function(){ followed ? anim.goToAndStop(74-anim.firstFrame,true) : anim.playSegments([125,130],true); });
@@ -568,12 +563,19 @@
 
   // interaction — confirmed states (abs frames, offset +16 from ip)
   var selected=false;
+  // likes count + avatar stack react to the like state (the surrounding context, not just the icon)
+  var likesEl=document.querySelector('.likes-count');
+  function updateLikes(){
+    likesEl.textContent=(11+(selected?1:0))+' likes';
+    if(window.likesAvatarToggle) window.likesAvatarToggle(selected);   // animated avatar in/out (avatar-stack script)
+  }
   // goToAndStop(f,true) is relative to firstFrame → use absFrame−firstFrame to rest on an absolute frame
   anim.addEventListener('DOMLoaded',function(){ crop(); anim.goToAndStop(0-anim.firstFrame,true); });
   LB.addEventListener('click',function(e){ e.preventDefault();
     anim.setSpeed(1);
     if(!selected){ anim.playSegments([75,111],true);  selected=true;  }  // click → like (select)
     else         { anim.playSegments([120,140],true); selected=false; }  // click → unlike (deselect)
+    updateLikes();   // count 11⇄12 + your avatar joins/leaves the stack
   });
   LB.addEventListener('mouseenter',function(){ if(!selected){ anim.setSpeed(2); anim.playSegments([0,64],true); } });    // hover-on @200%
   LB.addEventListener('mouseleave',function(){ if(!selected){ anim.setSpeed(1); anim.playSegments([142,168],true); } }); // hover-off @100%
@@ -629,6 +631,166 @@
       var d={btnW:0,btnH:32,icoSize:31,icoPadL:0,icoPadR:0,icoY:-2,icoX:-9,stroke:4.5,
              cropX:-2,cropY:-8,cropW:64,cropH:69,icoGap:-5,padR:12,lblY:1}[c.k];
       c.val=d; document.getElementById('lr_'+c.k).value=d; document.getElementById('lv_'+c.k).textContent=d; c.apply(d); });
+  });
+})();
+</script>
+
+<!-- ===== Replies: Reply button adds a compose field; publish increments the count ===== -->
+<script>
+(function(){
+  var MAX=3;                                            // total replies cap (test)
+  var rbtn=document.getElementById('reply-btn');
+  var rcount=rbtn.querySelector('.reply-count');
+  var heading=document.getElementById('replies-h');
+  var list=document.getElementById('replies-list');
+  var PERSONAS=[
+    {n:'Nebojsa Jurcic',a:'https://i.pravatar.cc/72?img=15'},
+    {n:'Mia Hansen',    a:'https://i.pravatar.cc/72?img=32'},
+    {n:'Diego Alvarez', a:'https://i.pravatar.cc/72?img=11'},
+    {n:'Aisha Khan',    a:'https://i.pravatar.cc/72?img=9'},
+    {n:'Tom Becker',    a:'https://i.pravatar.cc/72?img=14'},
+    {n:'Lena Petrova',  a:'https://i.pravatar.cc/72?img=51'},
+    {n:'Marco Rossi',   a:'https://i.pravatar.cc/72?img=5'},
+    {n:'Priya Nair',    a:'https://i.pravatar.cc/72?img=25'},
+    {n:'Sam Carter',    a:'https://i.pravatar.cc/72?img=16'},
+    {n:'Yuki Tanaka',   a:'https://i.pravatar.cc/72?img=68'}
+  ];
+
+  function published(){ return list.querySelectorAll('.p2-comment').length; }
+  function drafts(){ return list.querySelectorAll('.p2-compose').length; }
+  function render(){ var n=published(); rcount.textContent=n; heading.textContent=(n===1?'1 reply':n+' replies'); }
+
+  // each reply gets its own small Like-star (same animation as the main Like button, just smaller)
+  var likeData=document.getElementById('like-data').textContent;
+  function setupReplyStar(item){
+    var star=item.querySelector('.reply-star'), like=item.querySelector('.reply-like');
+    var a=lottie.loadAnimation({container:star,renderer:'svg',loop:false,autoplay:false,animationData:JSON.parse(likeData)});
+    var sel=false;
+    a.addEventListener('DOMLoaded',function(){ var s=star.querySelector('svg'); s.setAttribute('viewBox','-2 -8 64 69'); s.setAttribute('preserveAspectRatio','xMidYMid meet'); a.goToAndStop(0-a.firstFrame,true); });
+    like.addEventListener('click',function(e){ e.preventDefault(); a.setSpeed(1);
+      if(!sel){ a.playSegments([75,111],true); sel=true; } else { a.playSegments([120,140],true); sel=false; } });
+    like.addEventListener('mouseenter',function(){ if(!sel){ a.setSpeed(2); a.playSegments([0,64],true); } });
+    like.addEventListener('mouseleave',function(){ if(!sel){ a.setSpeed(1); a.playSegments([142,168],true); } });
+  }
+
+  function addCompose(){
+    if(published()+drafts() >= MAX) return;             // cap reached
+    var who=PERSONAS[Math.floor(Math.random()*PERSONAS.length)];   // random persona per reply
+    var box=document.createElement('div'); box.className='p2-compose';
+    box.innerHTML=
+      '<img src="'+who.a+'" alt="">'+
+      '<div class="cbody">'+
+        '<textarea placeholder="Write a reply…"></textarea>'+
+        '<div class="compose-actions">'+
+          '<button class="publish" type="button">Publish</button>'+
+          '<button class="cancel" type="button">Cancel</button>'+
+        '</div>'+
+      '</div>';
+    list.appendChild(box);
+    var ta=box.querySelector('textarea'); ta.focus();
+    box.querySelector('.cancel').addEventListener('click',function(){ box.remove(); });
+    box.querySelector('.publish').addEventListener('click',function(){
+      var txt=ta.value.trim(); if(!txt){ ta.focus(); return; }
+      var item=document.createElement('div'); item.className='p2-comment';
+      item.innerHTML=
+        '<img src="'+who.a+'" alt="">'+
+        '<button class="reply-x" type="button" title="Remove reply">×</button>'+
+        '<div class="cbody">'+
+          '<div><span class="p2-cname">'+who.n+'</span><span class="p2-cdate">just now</span></div>'+
+          '<div class="p2-ctext"></div>'+
+          '<div class="p2-cact"><span>Reply</span>'+
+            '<span class="reply-like"><span class="reply-star"></span>Like</span>'+
+          '</div>'+
+        '</div>';
+      item.querySelector('.p2-ctext').textContent=txt;   // text node — no HTML injection
+      box.replaceWith(item);
+      item.querySelector('.reply-x').addEventListener('click',function(){ item.remove(); render(); });
+      setupReplyStar(item);
+      render();
+    });
+  }
+
+  rbtn.addEventListener('click',function(e){ e.preventDefault(); addCompose(); });
+  render();
+})();
+</script>
+
+<!-- ===== Liked-avatars stack: animated avatar in/out + tuner ===== -->
+<button id="tuner-toggle-avatars" class="tuner-toggle" title="Liked-avatars animation">Avatars ⚙</button>
+<div id="tuner-avatars" class="tuner" hidden></div>
+<script>
+(function(){
+  var avatarsEl=document.querySelector('.avatars');
+  var EASE='cubic-bezier(.34,1.4,.5,1)';                 // slight overshoot = dynamic
+  var P={appearMs:200, shiftMs:430, stagger:20, startScale:0.45};
+  var myAv=null;
+
+  function flipAdd(){
+    var kids=[].slice.call(avatarsEl.children);
+    var oldL=kids.map(function(el){return el.getBoundingClientRect().left;});
+    myAv=new Image(); myAv.src='https://i.pravatar.cc/76?img=15'; myAv.alt='you';
+    avatarsEl.insertBefore(myAv, avatarsEl.firstChild);
+    kids.forEach(function(el,i){                          // INVERT existing to their old spot
+      var dx=oldL[i]-el.getBoundingClientRect().left;
+      el.style.transition='none'; el.style.transform='translateX('+dx+'px)';
+    });
+    myAv.style.transition='none'; myAv.style.transform='scale('+P.startScale+')'; myAv.style.opacity='0';
+    avatarsEl.offsetWidth;                                // reflow
+    kids.forEach(function(el,i){                          // PLAY: shift right, staggered
+      el.style.transition='transform '+P.shiftMs+'ms '+EASE+' '+(i*P.stagger)+'ms';
+      el.style.transform='';
+    });
+    requestAnimationFrame(function(){
+      myAv.style.transition='transform '+P.appearMs+'ms '+EASE+', opacity '+Math.round(P.appearMs*0.7)+'ms ease';
+      myAv.style.transform=''; myAv.style.opacity='1';
+    });
+  }
+  function flipRemove(){
+    var rm=myAv; myAv=null;
+    rm.style.transition='transform '+P.appearMs+'ms '+EASE+', opacity '+Math.round(P.appearMs*0.7)+'ms ease';
+    requestAnimationFrame(function(){ rm.style.transform='scale('+P.startScale+')'; rm.style.opacity='0'; });
+    setTimeout(function(){                                // then close the gap (others slide left, staggered)
+      var kids=[].slice.call(avatarsEl.children).filter(function(el){return el!==rm;});
+      var oldL=kids.map(function(el){return el.getBoundingClientRect().left;});
+      if(rm.parentNode) rm.remove();
+      kids.forEach(function(el,i){ var dx=oldL[i]-el.getBoundingClientRect().left; el.style.transition='none'; el.style.transform='translateX('+dx+'px)'; });
+      avatarsEl.offsetWidth;
+      kids.forEach(function(el,i){ el.style.transition='transform '+P.shiftMs+'ms '+EASE+' '+(i*P.stagger)+'ms'; el.style.transform=''; });
+    }, P.appearMs);
+  }
+  window.likesAvatarToggle=function(on){ if(on && !myAv) flipAdd(); else if(!on && myAv) flipRemove(); };
+
+  // ---- tuner ----
+  var C=[
+    {k:'appearMs',   label:'New avatar appear (ms)', min:0, max:1000,step:10,  val:200, apply:function(v){P.appearMs=v;}},
+    {k:'shiftMs',    label:'Others shift (ms)',      min:0, max:1000,step:10,  val:430, apply:function(v){P.shiftMs=v;}},
+    {k:'stagger',    label:'Stagger delay (ms)',     min:0, max:200, step:5,   val:20,  apply:function(v){P.stagger=v;}},
+    {k:'startScale', label:'Appear start scale',     min:0, max:1,   step:0.05,val:0.45,apply:function(v){P.startScale=v;}}
+  ];
+  var T=document.getElementById('tuner-avatars');
+  T.innerHTML='<h3>Liked-avatars animation</h3>';
+  C.forEach(function(c){
+    var row=document.createElement('div'); row.className='row';
+    row.innerHTML='<label>'+c.label+' <b id="av_'+c.k+'">'+c.val+'</b></label>'+
+      '<input type="range" id="ar_'+c.k+'" min="'+c.min+'" max="'+c.max+'" step="'+c.step+'" value="'+c.val+'">';
+    T.appendChild(row);
+    var r=row.querySelector('input'), out=row.querySelector('b');
+    c.apply(c.val);
+    r.addEventListener('input',function(){ c.val=parseFloat(r.value); out.textContent=c.val; c.apply(c.val); });
+  });
+  var btns=document.createElement('div'); btns.className='btns';
+  btns.innerHTML='<button id="av_replay">Replay</button><button id="av_reset">Reset</button>';
+  T.appendChild(btns);
+
+  document.getElementById('tuner-toggle-avatars').addEventListener('click',function(){
+    var show=T.hidden; document.querySelectorAll('.tuner').forEach(function(p){p.hidden=true;}); if(show) T.hidden=false;
+  });
+  document.getElementById('av_replay').addEventListener('click',function(){    // preview the appear animation
+    if(myAv){ myAv.remove(); myAv=null; } flipAdd();
+  });
+  document.getElementById('av_reset').addEventListener('click',function(){
+    C.forEach(function(c){ var d={appearMs:200,shiftMs:430,stagger:20,startScale:0.45}[c.k];
+      c.val=d; document.getElementById('ar_'+c.k).value=d; document.getElementById('av_'+c.k).textContent=d; c.apply(d); });
   });
 })();
 </script>
