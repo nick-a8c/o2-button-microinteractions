@@ -1,6 +1,16 @@
 # O2 button microinteractions
 
-A prototype of animated **Reply / Follow / Like** flair buttons for the O2 / WordPress.com post footer, built from After Effects → Lottie exports. Presented in a modal.
+A prototype of animated **Reply / Follow / Like** flair buttons for the O2 / WordPress.com post footer, built from After Effects → Lottie exports.
+
+## ▶ Live preview
+
+**[Open the P2 page replica →](https://nick-a8c.github.io/o2-button-microinteractions/o2-page-replica.html)** — the full 1920px P2 post page with the live Reply / Following / Like buttons, the tuner panels, and the working replies/likes behavior (open at ≥1920px wide). See [`PAGE-REPLICA-HANDOFF.md`](PAGE-REPLICA-HANDOFF.md) for what it does.
+
+> Served via **GitHub Pages** — enable it once in *Settings → Pages → Deploy from branch → `main` / `(root)`*. No Pages yet? One-click render via [htmlpreview](https://htmlpreview.github.io/?https://github.com/nick-a8c/o2-button-microinteractions/blob/main/o2-page-replica.html) (requires the repo to be public).
+
+---
+
+The original modal demo is `index.html`:
 
 Open **`index.html`** in a browser (or via any static server). Hover and click the buttons to see the interactions; press the close ✕ / backdrop / `Esc` to dismiss the modal, then "Open dialog" to reopen.
 

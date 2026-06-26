@@ -688,6 +688,7 @@
       '</div>';
     list.appendChild(box);
     var ta=box.querySelector('textarea'); ta.focus();
+    ta.addEventListener('keydown',function(e){ if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){ e.preventDefault(); box.querySelector('.publish').click(); } });
     box.querySelector('.cancel').addEventListener('click',function(){ box.remove(); });
     box.querySelector('.publish').addEventListener('click',function(){
       var txt=ta.value.trim(); if(!txt){ ta.focus(); return; }
