@@ -14,10 +14,9 @@ Every file is self-contained — the only external dependency is `lottie-web` fr
 
 | File | Purpose |
 |---|---|
-| **`o2-page-replica.html`** | The main deliverable — full P2 page (1920px) with the live buttons, tuner panels, and the replies/likes behavior. **This is the one to look at.** |
-| `o2-footer-replica.html` | Standalone footer-only version (just the action row + intralinks). Older; does **not** have the replies/label/avatar state work. |
-| `icons-test.html` | Isolated 65×65 icon tester — the three icons side by side with their live dimensions, for sanity-checking exports. |
-| `o2-anim-gallery / o2-buttons / reply-arrow / star-heart .html` | Early explorations, kept for reference. |
+| **`o2-page-replica.html`** | The deliverable — full P2 page (1920px) with the live buttons, tuner panels, and the replies/likes behavior. The whole prototype lives in this one self-contained file. |
+
+> Earlier variants (a footer-only version, an isolated 65×65 icon tester, and some early explorations) were trimmed out of this repo; they remain in the local working folder if needed.
 
 Lottie sources live outside the repo in `~/Desktop/json test/v2/`: **`reply-2.json`, `follow-2.json`, `like_i2b.json`** (all 65×65). They are inlined into the HTML, so the HTML is the source of truth at runtime; re-inline if you re-export.
 
@@ -97,7 +96,6 @@ Buttons: hover Reply; click Following / Like to toggle; click Reply to compose a
 
 ## Open items / next steps
 
-- **Only `o2-page-replica.html`** has the label/likes/replies/avatar work. The footer + test files are older; mirror if needed.
 - Avatars, names, like count, and reply personas are **placeholders** (pravatar + a hardcoded list). Productionizing means wiring to the real user/likes/comments data.
 - Reply is **hover-only** as an icon; the page's Reply *button* opens the compose flow, but the icon has no press/active state. A cleaner reply export would be needed for a full toggle.
 - The whole thing is a **standalone prototype** — no real O2 wiring. Inlined JSON would be replaced by proper asset loading in production.
