@@ -796,7 +796,7 @@ window.stretchBtn=function(btn, mutate){
   window.likesAvatarToggle=function(on){ if(on && !myAv) flipAdd(); else if(!on && myAv) flipRemove(); };
 
   // ---- hover "dock" wave: magnify the avatar under the cursor and ripple it out to neighbors ----
-  var W={peak:1.4, spread:2, lift:4, ms:180};
+  var W={peak:1.05, spread:2.25, lift:2, ms:350};
   var WEASE='cubic-bezier(.34,1.2,.4,1)';
   function imgs(){ return [].slice.call(avatarsEl.querySelectorAll('img')); }
   function applyWave(center){
@@ -825,10 +825,10 @@ window.stretchBtn=function(btn, mutate){
     {k:'stagger',    label:'Stagger delay (ms)',     min:0, max:200, step:5,   val:20,  apply:function(v){P.stagger=v;}},
     {k:'startScale', label:'Appear start scale',     min:0, max:1,   step:0.05,val:0.45,apply:function(v){P.startScale=v;}},
     {grp:'Hover wave (magnify)'},
-    {k:'wPeak',   label:'Peak scale',   min:1,  max:2.2,step:0.05,val:1.4,apply:function(v){W.peak=v;}},
-    {k:'wSpread', label:'Wave spread',  min:0,  max:5,  step:0.25,val:2,  apply:function(v){W.spread=v;}},
-    {k:'wLift',   label:'Lift (px)',    min:0,  max:24, step:1,   val:4,  apply:function(v){W.lift=v;}},
-    {k:'wMs',     label:'Speed (ms)',   min:40, max:600,step:10,  val:180,apply:function(v){W.ms=v;}}
+    {k:'wPeak',   label:'Peak scale',   min:1,  max:2.2,step:0.05,val:1.05,apply:function(v){W.peak=v;}},
+    {k:'wSpread', label:'Wave spread',  min:0,  max:5,  step:0.25,val:2.25,apply:function(v){W.spread=v;}},
+    {k:'wLift',   label:'Lift (px)',    min:0,  max:24, step:1,   val:2,  apply:function(v){W.lift=v;}},
+    {k:'wMs',     label:'Speed (ms)',   min:40, max:600,step:10,  val:350,apply:function(v){W.ms=v;}}
   ];
   var T=document.getElementById('tuner-avatars');
   T.innerHTML='<h3>Liked-avatars animation</h3>';
@@ -854,7 +854,7 @@ window.stretchBtn=function(btn, mutate){
   });
   document.getElementById('av_reset').addEventListener('click',function(){
     C.forEach(function(c){ if(!c.k) return;
-      var d={appearMs:200,shiftMs:430,stagger:20,startScale:0.45,wPeak:1.4,wSpread:2,wLift:4,wMs:180}[c.k];
+      var d={appearMs:200,shiftMs:430,stagger:20,startScale:0.45,wPeak:1.05,wSpread:2.25,wLift:2,wMs:350}[c.k];
       c.val=d; document.getElementById('ar_'+c.k).value=d; document.getElementById('av_'+c.k).textContent=d; c.apply(d); });
   });
 })();
