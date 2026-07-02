@@ -4,15 +4,17 @@ Animated **Reply / Following / Like** flair buttons for the O2 / WordPress.com (
 
 ## ▶ Live preview
 
-**[Open the page →](https://nick-a8c.github.io/button-micro-interaction/o2-page-replica.html)** — the full 1920px P2 post page with the live buttons, the dev tuner panels, and the working replies / likes behavior.
+- **[Generic P2 page →](https://nick-a8c.github.io/button-micro-interaction/o2-page-replica.html)** — the full 1920px P2 post page with the live buttons, dev tuner panels, and working replies / likes behavior.
+- **[Designomattic replica →](https://nick-a8c.github.io/button-micro-interaction/designomattic-p2.html)** — the same live buttons dropped into a pixel-faithful frame of a real P2 (nav bars + sidebar are static captures); dev settings hidden behind a discreet ⚙ in the top-right corner.
 
-> Best viewed at **≥1920px wide** for the 1:1 layout. No Pages? One-click render via [htmlpreview](https://htmlpreview.github.io/?https://github.com/nick-a8c/button-micro-interaction/blob/main/o2-page-replica.html).
+> Best viewed at **≥1720px wide** for the 1:1 layout. No Pages? One-click render via [htmlpreview](https://htmlpreview.github.io/?https://github.com/nick-a8c/button-micro-interaction/blob/main/o2-page-replica.html).
 
 ## What's here
 
 | File | What it is |
 |---|---|
 | `o2-page-replica.html` | The prototype (see features below). **Fully self-contained** — inlines its Lottie JSON; only `lottie-web` (CDN) + placeholder avatars load externally. |
+| `designomattic-p2.html` | The same interactions inside a pixel-faithful frame of a real P2 — the two nav bars and the left sidebar are static image captures (base64-inlined); the post + interaction panel + intralinks are live. Dev gears collapse behind one discreet ⚙. |
 | `PAGE-REPLICA-HANDOFF.md` | Deeper notes — per-button frame maps, crops, tuners, and the Lottie gotchas. |
 
 ## Features
